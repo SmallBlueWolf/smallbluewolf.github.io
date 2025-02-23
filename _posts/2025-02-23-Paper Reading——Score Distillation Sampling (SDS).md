@@ -22,7 +22,8 @@
 			- 在球坐标系中，随机采样一个相机参数 P（包含相机在空间中的位置和方向数据 (x,y,z,d) ）；同时，在相机周围随机采样一个点光源
 			- 根据相机参数 P 和光源位置，对这个 NeRF 进行渲染，生成当前相机视角下的 2D 图像，将这个图像送入 Diffusion 模型中
 			- 首先对送来的图像加噪，然后用一个 Diffusion 模型中预训练好的 U-Net 接收用户输入的文本描述，对加噪声后的图像进行预测，得到一个预测的噪声值（理想情况下，如果 NeRF 渲染的图像已经较为接近输入文本的描述，那么 U-Net 预测的噪声应该与实际添加的噪声非常接近）
-			- 利用 Diffusion 模型中常用的噪声预测 loss，计算输入文本对应的噪声和实际添加噪声之间的差异 $$
+			- 利用 Diffusion 模型中常用的噪声预测 loss，计算输入文本对应的噪声和实际添加噪声之间的差异 
+$$
 			L_{\text{NeRF}}=E[w(t)||UNet(\alpha_{t}x_{render}+\sigma_{t}\epsilon|t)-\epsilon||^{2}]\quad with\quad x_{render}=NeRF(camera, \theta)
 $$
 			- 我们的 NeRF 表示主要是由一个 $\text{MLP}(\cdot;\theta)$ 参数化体积密度和反射率构成的，我们用这个 loss 来调整 NeRF 的表示，使得场景在该随机化（随机相机参数和随机光源）采样的 2D 图像更加贴近于输入的文本描述
@@ -31,7 +32,8 @@ $$
 
 >  需要说明的是，U-Net 预测的 loss 主要反向传播给 NeRF，U-Net 作为 Diffusion 中预训练好的结构，本身它的梯度计算复杂度较高，而且在实践上来说并不是十分重要，因此 DreamFusion 将其参数冻结，因此 loss 全部用于更新 NeRF，不再更新 U-Net 的参数，在实验中仍然能够有比较好的效果
 
-- 重点再解释一下 SDS 损失函数 $$
+- 重点再解释一下 SDS 损失函数 
+$$
 \mathcal{L}_{\text{SDS}} = \mathbb{E}_{t,\epsilon,c}\Bigl[ w(t)\,\Bigl\|\epsilon - \epsilon_\phi\Bigl(x_0 + \sigma(t)\,\epsilon,\; t,\; c\Bigr)\Bigr\|_2^2\Bigr]
 $$
 	-  $x_0$ ：由当前 NeRF 模型渲染得到的图像

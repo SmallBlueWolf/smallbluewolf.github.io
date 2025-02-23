@@ -217,8 +217,3 @@ plugins:
   - jekyll-sitemap
   - jekyll-paginate
   - jekyll-spaceship
-
-markdown: kramdown
-kramdown:
-  input: GFM
-  math_engine: mathjax
