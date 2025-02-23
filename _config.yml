@@ -210,7 +210,7 @@ yat:
 markdown: kramdown
 kmarkdown:
   input: GFM
-  math_engine: none
+  math_engine: mathjax
 
 plugins:
   - jekyll-feed
