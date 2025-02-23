@@ -17,13 +17,13 @@
 		- 第一种很好理解，用一个文生图模型生成一个 3D 模型多个视角的图像，将其变成一个“多视角图像的三维重建”任务
 		- 但是问题在于，我们很难保证 Diffusion 模型生成的一组多视角图像的连贯性和稳定性，仅仅用 Prompts 去控制是非常不稳定的
 	2. “Using the multi-view diffusion model as a prior for Score Distillation Sampling.”
-		- 第二种就是，用多视角的 Diffusion 模型作为 SDS 过程的先验，这个可能比较难理解，我们可以先来看一下文献给出的 Pipeline ![Pasted image 20250223125753.png|800](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-23-Paper%20Reading——Score%20Distillation%20Sampling%20(SDS)/Pasted%20image%2020250223125753.png|800)
+		- 第二种就是，用多视角的 Diffusion 模型作为 SDS 过程的先验，这个可能比较难理解，我们可以先来看一下文献给出的 Pipeline ![Pasted image 20250223125753.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-23-Paper%20Reading——Score%20Distillation%20Sampling%20(SDS)/Pasted%20image%2020250223125753.png)
 			- 从左往右看，首先随机初始化一个 NeRF，由一个 MLP 来参数化表示体积密度和反射率（颜色），也即图中的 $\text{MLP}(\cdot;\theta)$
 			- 在球坐标系中，随机采样一个相机参数 P（包含相机在空间中的位置和方向数据 (x,y,z,d) ）；同时，在相机周围随机采样一个点光源
 			- 根据相机参数 P 和光源位置，对这个 NeRF 进行渲染，生成当前相机视角下的 2D 图像，将这个图像送入 Diffusion 模型中
 			- 首先对送来的图像加噪，然后用一个 Diffusion 模型中预训练好的 U-Net 接收用户输入的文本描述，对加噪声后的图像进行预测，得到一个预测的噪声值（理想情况下，如果 NeRF 渲染的图像已经较为接近输入文本的描述，那么 U-Net 预测的噪声应该与实际添加的噪声非常接近）
 			- 利用 Diffusion 模型中常用的噪声预测 loss，计算输入文本对应的噪声和实际添加噪声之间的差异 $$
-L_{\text{NeRF}}=E[w(t)||UNet(\alpha_{t}x_{render}+\sigma_{t}\epsilon|t)-\epsilon||^{2}]\quad with\quad x_{render}=NeRF(camera, \theta)
+			L_{\text{NeRF}}=E[w(t)||UNet(\alpha_{t}x_{render}+\sigma_{t}\epsilon|t)-\epsilon||^{2}]\quad with\quad x_{render}=NeRF(camera, \theta)
 $$
 			- 我们的 NeRF 表示主要是由一个 $\text{MLP}(\cdot;\theta)$ 参数化体积密度和反射率构成的，我们用这个 loss 来调整 NeRF 的表示，使得场景在该随机化（随机相机参数和随机光源）采样的 2D 图像更加贴近于输入的文本描述
 			- 最后，我们不断重复这一过程——在不同的随机采样视角下不断重复，每次迭代使得 NeRF 渲染的图像与文本描述的匹配度提高
@@ -33,7 +33,7 @@ $$
 
 - 重点再解释一下 SDS 损失函数 $$
 \mathcal{L}_{\text{SDS}} = \mathbb{E}_{t,\epsilon,c}\Bigl[ w(t)\,\Bigl\|\epsilon - \epsilon_\phi\Bigl(x_0 + \sigma(t)\,\epsilon,\; t,\; c\Bigr)\Bigr\|_2^2\Bigr]
-$$ 
+$$
 	-  $x_0$ ：由当前 NeRF 模型渲染得到的图像
 	-  $t$ ：采样的噪声时间步（通常服从均匀分布），决定噪声级别
 	- $\epsilon \sim \mathcal{N}(0, I)$：从标准正态分布中采样的噪声
@@ -57,7 +57,7 @@ $$
 - 评估指标： 
 	- 由于不存在真实的 3D 地面真值，作者采用了基于 CLIP 的 R-Precision 指标来衡量生成的 3D 模型在不同视角下渲染出的图像与输入文本描述之间的一致性
 	- 实验结果显示，DreamFusion 在生成图像质量和 3D 几何一致性方面均优于先前的方法，如 Dream Fields 和 CLIP-Mesh 
-    
+  
 - 消融实验：  
     论文通过一系列消融实验展示了各个组件（如视角增强、视角依赖文本提示、光照条件和纹理无关渲染）的重要性
     结果表明，每一项改进都对提升 3D 几何的准确性和渲染图像的真实感有显著作用
