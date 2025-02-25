@@ -1,8 +1,5 @@
 ---
-kanban-plugin:
----
----
-categories: Notess
+categories: Notes
 ---
 
 - 这篇笔记源自在读 ProlificDreamer 提出的 VDS 对 SDS 的改进思路，感觉比较难理解，所以专门写一篇 Note 记录一下，如果感兴趣可以去查看原文：
@@ -18,7 +15,7 @@ categories: Notess
 	- 如果我们从概率论的角度来解释的话，DreamFusion 是通过最大化 **likelihood** 来找到 **mode**，它所反映的是整个样本空间中概率密度最高的点，但并不一定是概率“质量”最高的点，特别是在高维空间中
 		- 我们先来看一个例子证明这一点，再来考虑原因，比如 Gauss 分布 
 			- 对于 $d\gt\gt1$ 的高维 Gauss 分布 $\mathcal{N}(0,I)$ 而言，概率密度函数为 $$
-p(\textbf{x})=\frac{1}{(2\pi)^{\frac{d}{2}}} \exp(- \frac{||\textbf{x}||^{2}}{2})
+			p(\textbf{x})=\frac{1}{(2\pi)^{\frac{d}{2}}} \exp(- \frac{||\textbf{x}||^{2}}{2})
 $$
 				- 显然，当 $||\textbf{x}||=0$ 时，指数部分达到最大值 $e^{0}=1$，此时 $p(\textbf{0})=\frac{1}{(2\pi)^{\frac{d}{2}}}$，也即此时在 $\textbf{0}$（注意不是 0 值，而是 0 向量，也即高维空间的原点）处取到 mode，此时 likelihood 最大
 			- 然后我们来理解一下，什么是概率密度和概率质量
