@@ -1,5 +1,5 @@
 ---
-categories: Paper Reading
+categories: Paper_Reading
 ---
 
 >  前言：SDS（分数蒸馏采样），目前几乎是文本生成 3D 模型的核心方法，因此写一篇 blog 来专门记录文献阅读过程
