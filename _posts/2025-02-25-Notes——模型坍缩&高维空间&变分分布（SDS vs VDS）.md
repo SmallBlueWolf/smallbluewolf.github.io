@@ -2,11 +2,8 @@
 kanban-plugin:
 ---
 ---
-categories: Notes
-
+categories: Notess
 ---
-
-## SDS 的一些问题
 
 - 这篇笔记源自在读 ProlificDreamer 提出的 VDS 对 SDS 的改进思路，感觉比较难理解，所以专门写一篇 Note 记录一下，如果感兴趣可以去查看原文：
 	- DreamFusion (SDS): [https://arxiv.org/abs/2209.14988](https://arxiv.org/abs/2209.14988)
@@ -14,7 +11,7 @@ categories: Notes
 
 - 这里就不解释 SDS 的原理了，具体可以看原文，或者我的另一篇 blog [点我](https://smallbluewolf.github.io/2025/02/23/Paper-Reading-Score-Distillation-Sampling-(SDS).html)
 
----
+## SDS 的一些问题
 
 - DreamFusion 通过对 3D 模型随机采样，对每一个采样点利用一个预训练好的 Diffusion 模型接收文本描述并评分，并以此更新 3D 模型
 	- 但是 DreamFusion 每次迭代只考虑一个样本点对 3D 模型的更新，也即对于每一个样本点，相对于当前的文本描述，Diffusion 模型会给出一个唯一的评价标准返回；但其实这并不合理——对于一个文本描述，可能同时存在多个合理的渲染结果，也即对于一次迭代，我们的“理想样本”应该是一组特定分布的样本点，而不是一个样本点；因此，DreamFusion 的做法可能会导致“**模型坍缩(Model Collapse)**”

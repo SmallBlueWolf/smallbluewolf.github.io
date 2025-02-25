@@ -4,9 +4,7 @@ categories: Notes
 ---
 ---
 categories: Paper Reading
-
 ---
-
 >  前言：SDS（分数蒸馏采样），目前几乎是文本生成 3D 模型的核心方法，因此写一篇 blog 来专门记录文献阅读过程
 - Paper Link: [https://arxiv.org/abs/2209.14988](https://arxiv.org/abs/2209.14988) （Poole B, Jain A, Barron J T, et al. Dreamfusion: Text-to-3d using 2d diffusion[J]. arXiv preprint arXiv:2209.14988, 2022.）
 
