@@ -80,12 +80,12 @@ $$
 		- 在 VDS 中：$\epsilon_\phi(x_t, t, c, y)$ 则是由一个参数化的变分分布（参数记为 $\phi$）生成的噪声估计
 
 - VDS 的改进主要是为了，额外的变分分布 score 可以让样本收敛到图中灰色圆环上的典型样本区域，同时增加样本的多样性
-	- ![[image.jpg]]
+	- ![image.jpg](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VDS）/image.jpg)
 	- 如图所示，对 likelihood 的优化会驱使样本向 mode 点移动，而变分分布的分数惩罚则会驱使样本之间互斥分开
 
 - 不过有一个问题，由于变分分布自身也是很容易不断变化的（你可以想象一组具有几乎固定相对位置的粒子，即使你把它固定在原点附近的区域，它们自身也可能不断调换位置，但保持彼此相对位置不变）
 	- 而变分分布不断变化，可能会导致梯度信号不稳定，甚至有可能导致训练发散（你可以想象模型的更新方向，一会儿要往左，一会儿要往右，因为目标不是一个点，而是一个范围）
-	- 因此，VDS 引入了 LoRA [[2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS vs VDS）#LoRA (Low-Rank Adaption)|（后面有详细解释）]]  ，它可以快速地学习变分分布；并且由于 LoRA 有一些 prior，我们可以用很少量的样本就学习到一个不错的 score
+	- 因此，VDS 引入了 LoRA （后面有详细解释） ，它可以快速地学习变分分布；并且由于 LoRA 有一些 prior，我们可以用很少量的样本就学习到一个不错的 score
 
 >  你可以想象，LoRA 本身见过很多的分布，它印象中固定了一种样本之间的分布形状，因此它会阻滞变分分布自身的变化，同时不影响变分分布整体向着正确的方向移动
 
@@ -96,7 +96,7 @@ $$
 - 另一方面，SDS 一般需要将 CFG 设置为很大的值（比如 100）来增加生成图像的细节；而 VDS 缓解了这一点，通常可以设置为正常的值（如 7.5），从而缓解了 SDS 带来的过饱和问题
 
 - 整体来说，ProlificDreamer 的流程图如下（来自原文献）
-	- ![[Pasted image 20250226112132.png]]
+	- ![Pasted image 20250226112132.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VDS）/Pasted%20image%2020250226112132.png)
 
 - 最后提一下对于 particle 数量的讨论
 	- 因为每一个 particle 表示的是一个 NeRF 或者一个 Mesh，因此数量无法设置很大，通常是 1-4
