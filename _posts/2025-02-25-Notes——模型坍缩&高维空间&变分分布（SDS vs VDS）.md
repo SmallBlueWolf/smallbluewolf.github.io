@@ -57,8 +57,8 @@ $$
 
 - 具体来说，VDS 将 SDS 优化公式的第二项由零均值的 Gauss 换成了变分分布的 score $$
 \begin{aligned}
-\text{SDS/SJC:} \quad \nabla_\theta \mathcal{L}_{\text{SDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - \textcolor{red}{\epsilon} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
-\text{VSD:} \quad \nabla_\theta \mathcal{L}_{\text{VSD}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - \textcolor{red}{\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
+\text{SDS/SJC:} \quad \nabla_\theta \mathcal{L}_{\text{SDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
+\text{VSD:} \quad \nabla_\theta \mathcal{L}_{\text{VSD}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
 \end{aligned}$$
 - 这里详细解释一下公式
 	- $g(\theta,c)$
@@ -75,7 +75,7 @@ $$
 		- 关于时间 $t$ 的权重函数，用来对不同时间步的重要性加权
 	- $\mathbb{E}_{t,\epsilon,c}$
 		- 表示对时间 $t$、噪声 $\epsilon$、条件 $c$ 等变量进行平均，这种采样方式确保了梯度更新可以充分考虑整个数据空间及噪声扰动的影响
-	- $\textcolor{red}{\epsilon}$ vs $\textcolor{red}{\epsilon_\phi(x_t, t, c, y)}$
+	- ${\epsilon}$ vs ${\epsilon_\phi(x_t, t, c, y)}$
 		- 在 SDS 中：$\epsilon$ 是直接从标准 Gauss 分布中采样得到的噪声
 		- 在 VDS 中：$\epsilon_\phi(x_t, t, c, y)$ 则是由一个参数化的变分分布（参数记为 $\phi$）生成的噪声估计
 
