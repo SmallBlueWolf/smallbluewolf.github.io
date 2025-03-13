@@ -58,7 +58,7 @@ $$
 - 具体来说，VDS 将 SDS 优化公式的第二项由零均值的 Gauss 换成了变分分布的 score $$
 \begin{aligned}
 \text{SDS/SJC:} \quad \nabla_\theta \mathcal{L}_{\text{SDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
-\text{VSD:} \quad \nabla_\theta \mathcal{L}_{\text{VSD}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
+\text{VDS:} \quad \nabla_\theta \mathcal{L}_{\text{VDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
 \end{aligned}$$
 - 这里详细解释一下公式
 	- $g(\theta,c)$
