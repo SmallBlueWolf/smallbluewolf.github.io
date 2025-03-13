@@ -2,9 +2,9 @@
 categories: Notes
 ---
 
-- 这篇笔记源自在读 ProlificDreamer 提出的 VDS 对 SDS 的改进思路，感觉比较难理解，所以专门写一篇 Note 记录一下，如果感兴趣可以去查看原文：
+- 这篇笔记源自在读 ProlificDreamer 提出的 VSD 对 SDS 的改进思路，感觉比较难理解，所以专门写一篇 Note 记录一下，如果感兴趣可以去查看原文：
 	- DreamFusion (SDS): [https://arxiv.org/abs/2209.14988](https://arxiv.org/abs/2209.14988)
-	- ProlificDreamer (VDS): [https://arxiv.org/abs/2305.16213](https://arxiv.org/abs/2305.16213)
+	- ProlificDreamer (VSD): [https://arxiv.org/abs/2305.16213](https://arxiv.org/abs/2305.16213)
 
 - 这里就不解释 SDS 的原理了，具体可以看原文，或者我的另一篇 blog [点我](https://smallbluewolf.github.io/2025/02/23/Paper-Reading-Score-Distillation-Sampling-(SDS).html)
 
@@ -26,7 +26,7 @@ $$
 				- 当 $r$ 很小时，$r^{d-1}$ 很小，导致整体概率质量下降
 				- 当 $r$ 增大时，$r^{d-1}$ 很大，即使密度 $r$ 在下降，其积分也有可能变大
 			- 根据推导证明，$P(r)$ 在 $r\approx \sqrt{d-1}$ 附近达到最大值，也即对于高维的高斯分布而言，概率质量集中在半径为 $\sqrt{d-1}$ 的球壳上，如下图所示
-				- ![Pasted image 20250225153124.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VDS）/Pasted%20image%2020250225153124.png)
+				- ![Pasted image 20250225153124.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VSD）/Pasted%20image%2020250225153124.png)
 				- 可以看到，其中概率质量最大的区域对应的样本是一张“雪花噪声”图，而概率密度最大的点对应的样本却是一张纯色图，相差很大
 
 >  一些概念解释:
@@ -46,19 +46,19 @@ $$
 	- 其实理想情况下，我们只需要对 $p_{t=0}(x_{0}\mid y)$ 这个分布优化即可
 	- 为了缓解细节丢失的问题，SDS 会使用非常大的 CFG 值来增加细节，又容易导致 SDS 生成的结果过饱和，也即颜色、对比度等参数过强
 
-## VDS 的改进思路
+## VSD 的改进思路
 
-- 在开始介绍 VDS 的改进思路之前，我们先了解一下，什么是**变分分布 (Variational distribution)**
+- 在开始介绍 VSD 的改进思路之前，我们先了解一下，什么是**变分分布 (Variational distribution)**
 	- 其实可以理解为，变分分布就是分布的“变量”，是一个可以不断变化、调整的分布
 	- 求解某个变量的真实分布往往非常复杂，直接计算或采样都非常困难；因此，我们引入一个结构简单、易于操作的分布，并通过不断调整它的参数，让它尽可能接近想要得到的目标分布——这个简单且可调的分布就称为变分分布
 
 - 现在我们回到 SDS 中，我们已经知道在 3D 生成任务，也即从一段文字描述中生成一个 3D 模型的过程，可能有无数种合理的结果；而 SDS 只关注一个“最优解”，由此导致模型坍缩的问题
-	- VDS 在 SDS 的基础上，引入变分分布的思想——也即，我们希望找到的不是一个“最优解”，而是一个“最优分布”
+	- VSD 在 SDS 的基础上，引入变分分布的思想——也即，我们希望找到的不是一个“最优解”，而是一个“最优分布”
 
-- 具体来说，VDS 将 SDS 优化公式的第二项由零均值的 Gauss 换成了变分分布的 score $$
+- 具体来说，VSD 将 SDS 优化公式的第二项由零均值的 Gauss 换成了变分分布的 score $$
 \begin{aligned}
 \text{SDS/SJC:} \quad \nabla_\theta \mathcal{L}_{\text{SDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
-\text{VDS:} \quad \nabla_\theta \mathcal{L}_{\text{VDS}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
+\text{VSD:} \quad \nabla_\theta \mathcal{L}_{\text{VSD}}(\theta) &\triangleq \mathbb{E}_{t, \epsilon, c} \left[ \omega(t) \left( \epsilon_{\text{pretrain}}(x_t, t, y) - {\epsilon_\phi(x_t, t, c, y)} \right) \frac{\partial g(\theta, c)}{\partial \theta} \right] \\
 \end{aligned}$$
 - 这里详细解释一下公式
 	- $g(\theta,c)$
@@ -77,15 +77,15 @@ $$
 		- 表示对时间 $t$、噪声 $\epsilon$、条件 $c$ 等变量进行平均，这种采样方式确保了梯度更新可以充分考虑整个数据空间及噪声扰动的影响
 	- ${\epsilon}$ vs ${\epsilon_\phi(x_t, t, c, y)}$
 		- 在 SDS 中：$\epsilon$ 是直接从标准 Gauss 分布中采样得到的噪声
-		- 在 VDS 中：$\epsilon_\phi(x_t, t, c, y)$ 则是由一个参数化的变分分布（参数记为 $\phi$）生成的噪声估计
+		- 在 VSD 中：$\epsilon_\phi(x_t, t, c, y)$ 则是由一个参数化的变分分布（参数记为 $\phi$）生成的噪声估计
 
-- VDS 的改进主要是为了，额外的变分分布 score 可以让样本收敛到图中灰色圆环上的典型样本区域，同时增加样本的多样性
-	- ![image.jpg](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VDS）/image.jpg)
+- VSD 的改进主要是为了，额外的变分分布 score 可以让样本收敛到图中灰色圆环上的典型样本区域，同时增加样本的多样性
+	- ![image.jpg](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VSD）/image.jpg)
 	- 如图所示，对 likelihood 的优化会驱使样本向 mode 点移动，而变分分布的分数惩罚则会驱使样本之间互斥分开
 
 - 不过有一个问题，由于变分分布自身也是很容易不断变化的（你可以想象一组具有几乎固定相对位置的粒子，即使你把它固定在原点附近的区域，它们自身也可能不断调换位置，但保持彼此相对位置不变）
 	- 而变分分布不断变化，可能会导致梯度信号不稳定，甚至有可能导致训练发散（你可以想象模型的更新方向，一会儿要往左，一会儿要往右，因为目标不是一个点，而是一个范围）
-	- 因此，VDS 引入了 LoRA （后面有详细解释） ，它可以快速地学习变分分布；并且由于 LoRA 有一些 prior，我们可以用很少量的样本就学习到一个不错的 score
+	- 因此，VSD 引入了 LoRA （后面有详细解释） ，它可以快速地学习变分分布；并且由于 LoRA 有一些 prior，我们可以用很少量的样本就学习到一个不错的 score
 
 >  你可以想象，LoRA 本身见过很多的分布，它印象中固定了一种样本之间的分布形状，因此它会阻滞变分分布自身的变化，同时不影响变分分布整体向着正确的方向移动
 
@@ -93,14 +93,14 @@ $$
 
 ---
 
-- 另一方面，SDS 一般需要将 CFG 设置为很大的值（比如 100）来增加生成图像的细节；而 VDS 缓解了这一点，通常可以设置为正常的值（如 7.5），从而缓解了 SDS 带来的过饱和问题
+- 另一方面，SDS 一般需要将 CFG 设置为很大的值（比如 100）来增加生成图像的细节；而 VSD 缓解了这一点，通常可以设置为正常的值（如 7.5），从而缓解了 SDS 带来的过饱和问题
 
 - 整体来说，ProlificDreamer 的流程图如下（来自原文献）
-	- ![Pasted image 20250226112132.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VDS）/Pasted%20image%2020250226112132.png)
+	- ![Pasted image 20250226112132.png](https://raw.githubusercontent.com/SmallBlueWolf/smallbluewolf.github.io/main/_static/2025-02-25-Notes——模型坍缩&高维空间&变分分布（SDS%20vs%20VSD）/Pasted%20image%2020250226112132.png)
 
 - 最后提一下对于 particle 数量的讨论
 	- 因为每一个 particle 表示的是一个 NeRF 或者一个 Mesh，因此数量无法设置很大，通常是 1-4
-	- 当particle 只有 $n=1$ 时，VDS 仍然与 SDS 不同；因此 VDS 用了一个比较复杂的网络来建模分布 score，因此即使只有 1 个 particle，它也不会直接聚集在 mode 点，因此仍然能达到比 SDS 更好的效果，并且 CFG 仍然可以设置到一个正常的值
+	- 当particle 只有 $n=1$ 时，VSD 仍然与 SDS 不同；因此 VSD 用了一个比较复杂的网络来建模分布 score，因此即使只有 1 个 particle，它也不会直接聚集在 mode 点，因此仍然能达到比 SDS 更好的效果，并且 CFG 仍然可以设置到一个正常的值
 
 ### LoRA (Low-Rank Adaption)
 
