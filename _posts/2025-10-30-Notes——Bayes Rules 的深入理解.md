@@ -70,7 +70,7 @@ $$
 
 ## EWC 公式解读（对应 EWC 文献公式 2）
 
-$$\log p (\theta \mid \mathcal{D}) = \log p \left(\mathcal{D}_{B} \mid \theta\right) + \log p (\theta \mid \mathcal{D}_{A}) - \log p \left(\mathcal{D} _ {B}\right) \tag {2}$$
+$$\log p (\theta \mid \mathcal{D}) = \log p \left(\mathcal{D}_{B} \mid \theta\right) + \log p (\theta \mid \mathcal{D}_{A}) - \log p \left(\mathcal{D}_{B}\right) \tag {2}$$
 
 如果前面你都认真看完了，你应该能很快理解 EWC 对于机器学习的原始 Bayes 公式做了什么
 
