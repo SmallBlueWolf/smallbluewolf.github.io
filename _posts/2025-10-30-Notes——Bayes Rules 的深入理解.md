@@ -23,7 +23,7 @@
 3. 证据 $P(E)$ (**Evidence**)：在整个人群中（无论得病与否），检测是阳性的概率有多大？
 	- 它包括两种情况：A. 真的得病，检测为阳性；B. 没得病，但是误检为阳性
 	- $P(\text{“阳性”})=(0.1\% \times 99\%) + (99.9\% \times 1\%)\approx 1.1\%$
-4. 后验概率 $P(H\mid E)$ (Posterior)：在看到检测结果是阳性这个**证据**之后，你真的得病的概率有多大？
+4. 后验概率 $P(H\mid E)$ (**Posterior**)：在看到检测结果是阳性这个**证据**之后，你真的得病的概率有多大？
 	- $P(\text{“得病”}\mid\text{“阳性”})=?$
 	-  这个才是我们一开始的问题的答案，经过证据修正后的**最终信念**
 
@@ -43,16 +43,16 @@ $$
 ## 机器学习 Bayes 公式解读（对应 EWC 文献 公式 1）
 
 $$
-  \log p (\theta | \mathcal {D}) = \log p (\mathcal {D} | \theta) + \log p (\theta) - \log p (\mathcal {D}) \tag {1}
+  \log p (\theta \mid \mathcal{D}) = \log p (\mathcal{D} \mid \theta) + \log p (\theta) - \log p (\mathcal{D}) \tag {1}
 $$
 
 这里就可以用之前的 4 要素风格来理解：
 
-- $\log p (\theta | \mathcal {D})$：*后验概率（Posterior）*
+- $\log p (\theta \mid \mathcal {D})$：*后验概率（Posterior）*
 	- 在看到了所有训练数据 $\mathcal{D}$ 之后，参数 $\theta$ 是“正确设置”的概率
 >  这是我们希望最大化的概率，也即我们希望 $\theta$ 尽可能是正确的
 
-- $\log p (\mathcal {D} | \theta)$：*似然性（Likelihood）*
+- $\log p (\mathcal {D} \mid \theta)$：*似然性（Likelihood）*
 	- 假如我把参数设置为 $\theta$ ，那么用这个网络可以“正确生成”或“正确分类”现有数据 $\mathcal{D}$ 的概率
 >  在实践中，等价于 Loss Function（$-L(\theta)$），如果模型在当前 $\theta$ 下正确 work 的概率高，则 Loss 值就小，因此你应该听说过“最大似然”的优化方法
 
@@ -70,13 +70,11 @@ $$
 
 ## EWC 公式解读（对应 EWC 文献公式 2）
 
-$$
-  \log p (\theta | \mathcal {D}) = \log p \left(\mathcal {D}_{B} | \theta\right) + \log p (\theta | \mathcal {D}_{A}) - \log p \left(\mathcal {D} _ {B}\right) \tag {2}
-$$
+$$\log p (\theta \mid \mathcal{D}) = \log p \left(\mathcal{D}_{B} \mid \theta\right) + \log p (\theta \mid \mathcal{D}_{A}) - \log p \left(\mathcal{D} _ {B}\right) \tag {2}$$
 
 如果前面你都认真看完了，你应该能很快理解 EWC 对于机器学习的原始 Bayes 公式做了什么
 
-- 可以看出，这是在训练 task B，因为最后的“证据项”是数据集 B；但是它把先验概率换为了 $\log p (\theta | \mathcal {D}_{A})$，这是 task A 的后验概率
+- 可以看出，这是在训练 task B，因为最后的“证据项”是数据集 B；但是它把先验概率换为了 $\log p (\theta \mid \mathcal {D}_{A})$，这是 task A 的后验概率
 	- 也即，在 task B 的优化中，我们不再用一个模糊的先验来约束 $\theta$ 的更新，而是用 $\theta$ 能够在 task A 中表现好的要求来约束 $\theta$ 的更新
 
 - 简而言之，EWC 的想法就是——当前任务的先验概率应该是上一个任务的后验概率，在理论上完美实现了知识的“传承”
