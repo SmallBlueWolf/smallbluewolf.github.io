@@ -1,3 +1,8 @@
+---
+categories: Notes
+mathjax: true
+---
+
 >  Prologue：做 Deep Learning 的人肯定都知道 Bayes，学过概率论的肯定也对 Bayes rule 肯定也很熟悉，我可以很快写出公式，但其实感觉一直都很难深入理解，在读 EWC 的时候，和 AI 对峙过程中，偶然问出了一个我觉得很不错的理解方法，特此写一篇 note
 
 ## Feynman 风格解读
@@ -27,9 +32,10 @@
 	- $P(\text{“得病”}\mid\text{“阳性”})=?$
 	-  这个才是我们一开始的问题的答案，经过证据修正后的**最终信念**
 
-- Bayes Rule
+---
+
 $$
-P(H\mid E) = \frac{P(E\mid H)\times P(H)}{P(E)}
+\text{Bayes Rule:}\qquad P(H\mid E) = \frac{P(E\mid H)\times P(H)}{P(E)}
 $$
 
 代入计算，得到 $P(\text{“得病”}\mid\text{“阳性”})=(99\% \times 0.1\%) / 1.1\%\approx 9\%$

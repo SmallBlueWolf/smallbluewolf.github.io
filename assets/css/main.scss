@@ -36,3 +36,28 @@ $brand-color: map-get($brand-colors, "orangered");
 $content-width: {{ site.content_width | default: '920px' }};
 
 @import "yat";
+
+// MathJax styling
+.mjx-chtml {
+  display: inline-block;
+  line-height: 0;
+}
+
+// Display mode math ($$...$$)
+.mjx-container[jax="CHTML"][display="true"],
+div.math {
+  display: flex;
+  justify-content: center;
+  margin: 1em 0;
+
+  .mjx-chtml {
+    display: block;
+    line-height: normal;
+    padding: 0;
+  }
+}
+
+// Inline math ($...$)
+.mjx-container[jax="CHTML"] {
+  display: inline-block;
+}

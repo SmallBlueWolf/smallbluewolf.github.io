@@ -208,9 +208,11 @@ header_pages:
 # Build settings
 # highlighter: none
 markdown: kramdown
-kmarkdown:
+kramdown:
   input: GFM
-  math_engine: 
+  math_engine:
+  syntax_highlighter_opts:
+    disable: true
 
 plugins:
   - jekyll-feed
@@ -220,9 +222,19 @@ plugins:
   - jekyll-spaceship
 
 jekyll-spaceship:
-  math_engine: mathjax
-  mathjax:
-    source: cdn
+  processors:
+    - mathjax-processor
+  mathjax-processor:
+    src:
+      - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    config:
+      tex:
+        inlineMath:
+          - ['$','$']
+        displayMath:
+          - ['$$','$$']
+      chtml:
+        scale: 1.1
 
 # Mathjax
 # If you want to use Mathjax, you can set true
